@@ -1845,3 +1845,42 @@ if (
       .catch(() => {});
   });
 }
+/* Automatically add saved product categories to the main menu navbars. */
+window.OreoFirebase.onProducts((products) => {
+  const categories = [
+    ...new Set(
+      products
+        .map((product) => product.category)
+        .filter((category) => category && category !== "__new__")
+    )
+  ].sort((a, b) => a.localeCompare(b));
+
+  ["filters", "filters2"].forEach((id) => {
+    const navbar = document.getElementById(id);
+
+    if (!navbar) return;
+
+    const topRatedButton = navbar.querySelector(
+      'button[data-f="Top"]'
+    );
+
+    categories.forEach((category) => {
+      const alreadyExists = [
+        ...navbar.querySelectorAll("button")
+      ].some((button) => button.dataset.f === category);
+
+      if (alreadyExists) return;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.f = category;
+      button.textContent = category;
+
+      navbar.insertBefore(button, topRatedButton);
+    });
+
+    if (typeof slide === "function") {
+      slide(navbar);
+    }
+  });
+});
