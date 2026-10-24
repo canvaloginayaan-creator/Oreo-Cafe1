@@ -166,6 +166,17 @@ $("#productSearch").addEventListener("input", renderProducts);
 $("#productCategory").addEventListener("change", renderProducts);
 $("#productsBody").addEventListener("click", (event) => { const button = event.target.closest("[data-edit]"); if (button) openProductEditor(button.dataset.edit); });
 $("#addProduct").addEventListener("click", () => openProductEditor());
+$("#productForm").elements.category.addEventListener("change", () => {
+  const fields = $("#productForm").elements;
+  const isNew = fields.category.value === "__new__";
+
+  document.getElementById("newCategoryWrap").hidden = !isNew;
+  fields.newCategory.required = isNew;
+
+  if (isNew) {
+    fields.newCategory.focus();
+  }
+});
 $("#seedProducts").addEventListener("click", async () => {
   if (products.length && !confirm("Import the 24 starter products? Matching starter IDs will be replaced with their defaults.")) return;
   const button = $("#seedProducts"); button.disabled = true;
