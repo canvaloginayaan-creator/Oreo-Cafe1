@@ -37,7 +37,11 @@
   };
 
   function slugify(value) {
-    return String(value || "product").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "product";
+    return String(value || "product")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "product";
   }
 
   function number(value, fallback) {
@@ -47,33 +51,95 @@
 
   function safeImage(value) {
     const url = String(value || "").trim();
+
     if (/^https?:\/\//i.test(url)) return url;
-    if (/^images\/[a-z0-9_./-]+$/i.test(url) && !url.includes("..")) return url;
+
+    if (
+      /^images\/[a-z0-9_./-]+$/i.test(url) &&
+      !url.includes("..")
+    ) {
+      return url;
+    }
+
     return "";
   }
 
   function normalize(input, fallbackId) {
     const p = input || {};
-    const name = String(p.name || "Untitled product").trim().slice(0, 120);
-    const category = ["Coffee", "Tea", "Pastry"].includes(p.category) ? p.category : "Coffee";
-    const description = String(p.description || descriptions[category]).trim().slice(0, 500);
+
+    const name = String(p.name || "Untitled product")
+      .trim()
+      .slice(0, 120);
+
+    const category = String(p.category || "Coffee")
+      .trim()
+      .replace(/\s+/g, " ")
+      .slice(0, 80) || "Coffee";
+
+    const description = String(
+      p.description ||
+      descriptions[category] ||
+      "Prepared fresh to order and served with care."
+    ).trim().slice(0, 500);
+
     return {
-      id: String(p.id || fallbackId || slugify(name)).replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 120),
+      id: String(p.id || fallbackId || slugify(name))
+        .replace(/[^a-zA-Z0-9_-]/g, "-")
+        .slice(0, 120),
+
       name,
       slug: slugify(p.slug || name),
       price: Math.max(0, number(p.price, 0)),
       category,
-      emoji: String(p.emoji || (category === "Pastry" ? "🥐" : category === "Tea" ? "🍵" : "☕")).slice(0, 8),
+
+      emoji: String(
+        p.emoji ||
+        (
+          category === "Pastry"
+            ? "🥐"
+            : category === "Tea"
+              ? "🍵"
+              : "☕"
+        )
+      ).slice(0, 8),
+
       hue: ((number(p.hue, 28) % 360) + 360) % 360,
       rating: Math.min(5, Math.max(0, number(p.rating, 4.8))),
       description,
-      longDescription: String(p.longDescription || description + " " + descriptions[category]).trim().slice(0, 2000),
+
+      longDescription: String(
+        p.longDescription ||
+        description + " " +
+        (
+          descriptions[category] ||
+          "Prepared fresh to order and served with care."
+        )
+      ).trim().slice(0, 2000),
+
       image: safeImage(p.image),
       sku: String(p.sku || "").trim().slice(0, 80),
-      ingredients: String(p.ingredients || "").trim().slice(0, 600),
+
+      ingredients: String(p.ingredients || "")
+        .trim()
+        .slice(0, 600),
+
       calories: Math.max(0, number(p.calories, 0)),
-      prepTime: String(p.prepTime || (category === "Pastry" ? "Ready to serve" : "4–6 min")).slice(0, 80),
-      stock: p.stock === null || p.stock === "" || typeof p.stock === "undefined" ? null : Math.max(0, Math.floor(number(p.stock, 0))),
+
+      prepTime: String(
+        p.prepTime ||
+        (category === "Pastry" ? "Ready to serve" : "4–6 min")
+      ).slice(0, 80),
+
+      stock:
+        p.stock === null ||
+        p.stock === "" ||
+        typeof p.stock === "undefined"
+          ? null
+          : Math.max(
+              0,
+              Math.floor(number(p.stock, 0))
+            ),
+
       smallDelta: number(p.smallDelta, -0.5),
       mediumDelta: number(p.mediumDelta, 0),
       largeDelta: number(p.largeDelta, 0.7),
@@ -84,13 +150,31 @@
     };
   }
 
-  const defaults = legacy.map((m) => normalize({
-    id: slugify(m[0]), name: m[0], price: m[1], category: m[2], emoji: m[3],
-    hue: m[4], rating: m[5], description: m[6], image: m[7]
-  }));
+  const defaults = legacy.map((m) =>
+    normalize({
+      id: slugify(m[0]),
+      name: m[0],
+      price: m[1],
+      category: m[2],
+      emoji: m[3],
+      hue: m[4],
+      rating: m[5],
+      description: m[6],
+      image: m[7]
+    })
+  );
 
   function toLegacy(p) {
-    return [p.name, p.price, p.category, p.emoji, p.hue, p.rating, p.description, p.image];
+    return [
+      p.name,
+      p.price,
+      p.category,
+      p.emoji,
+      p.hue,
+      p.rating,
+      p.description,
+      p.image
+    ];
   }
 
   function money(value) {
@@ -98,16 +182,32 @@
   }
 
   function escapeHtml(value) {
-    return String(value == null ? "" : value).replace(/[&<>'"]/g, (character) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
-    })[character]);
+    return String(value == null ? "" : value).replace(
+      /[&<>'"]/g,
+      (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        "\"": "&quot;"
+      })[character]
+    );
   }
 
   function sizesFor(product) {
     return [
-      { name: "Small", delta: product.smallDelta },
-      { name: "Medium", delta: product.mediumDelta },
-      { name: "Large", delta: product.largeDelta }
+      {
+        name: "Small",
+        delta: product.smallDelta
+      },
+      {
+        name: "Medium",
+        delta: product.mediumDelta
+      },
+      {
+        name: "Large",
+        delta: product.largeDelta
+      }
     ];
   }
 
