@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en" data-theme="espresso">
+<head>
+<script>/* performance mode is applied before first paint (saved choice, or automatically on low-end devices) */
+try{var t=localStorage.getItem('oc-theme2');if(t==='system')delete document.documentElement.dataset.theme;else if(t)document.documentElement.dataset.theme=t;var p=localStorage.getItem('oc-perf');if(p==='1'||(p===null&&((navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2)||(navigator.connection&&navigator.connection.saveData))))document.documentElement.dataset.perf='on'}catch(e){}</script>
+<link rel="icon" href="images/logo.png">
+<link rel="apple-touch-icon" href="images/logo.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#130e0b">
+<meta name="description" content="Oreo's Cafe. Small-batch coffee, fresh pastries and a corner table with your name on it.">
+<meta property="og:title" content="Oreo's Cafe">
+<meta property="og:description" content="Small-batch coffee, fresh pastries and a corner table with your name on it.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oreo's Cafe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="blur" id="blur"><i></i><i></i><i></i></div>
+<nav id="nav" aria-label="Main">
+  <a class="logo" href="#home"><i>☕<img src="images/logo.png" alt=""></i>Oreo's Cafe</a>
+  <div class="links" id="links">
+    <span class="slider" id="slider"></span><button class="srbtn" id="srBtn" aria-label="Search the menu"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><a href="#home" class="on"><svg viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg><span>Home</span></a><a href="#menu"><svg viewBox="0 0 24 24"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/><path d="M17 9h2a2 2 0 0 1 0 5h-2M8 3v2M12 3v2"/></svg><span>Menu</span></a><a href="#about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>About</span></a><a href="#reserve"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Reserve</span></a>
+  </div>
+  <div class="right">
+  <a class="auth-pill" id="authLink" href="auth.html" aria-label="Log in or create an account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span id="authText">Log in</span></a>
+  <div class="order">
+    <button id="orderBtn" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg><span class="otxt">Order</span><b id="count">0</b></button>
+    <div class="cart" id="cart"></div>
+  </div>
+  <div class="more">
+    <button class="circle gl" id="moreBtn" aria-label="Settings menu" aria-expanded="false" aria-haspopup="menu"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>
+    <div class="menu" id="menuPop" role="menu">
+        <h4>Explore</h4>
+        <button class="it"><svg viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.500" cy="8.500" r="1"/></svg>Categories</button>
+        <button class="it"><svg viewBox="0 0 24 24"><path d="m3 8 4.500 4L12 5l4.500 7L21 8l-2 11H5L3 8Z"/></svg>Best sellers</button>
+        <button class="it"><svg viewBox="0 0 24 24"><path d="M16 4h4v4M4 20 20 4M16 20h4v-4M4 4l5 5M15 15l5 5"/></svg>Surprise me</button>
+        <hr><h4>Tools</h4>
+        <button class="it"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.500"/><path d="M11 18h2"/></svg>Install app</button>
+        <button class="it"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2.500"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>Keyboard shortcuts</button>
+        <hr><h4>Preferences</h4>
+        <button class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Language<small>English (UK) &rsaquo;</small></button>
+        <button class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.700 1.700 0 0 0 .3 1.800l.1.100a2 2 0 1 1-2.800 2.800l-.1-.1a1.700 1.700 0 0 0-1.800-.3 1.700 1.700 0 0 0-1 1.500V21a2 2 0 1 1-4 0v-.1a1.700 1.700 0 0 0-1.100-1.500 1.700 1.700 0 0 0-1.800.3l-.1.1a2 2 0 1 1-2.800-2.800l.1-.1a1.700 1.700 0 0 0 .3-1.800 1.700 1.700 0 0 0-1.500-1H3a2 2 0 1 1 0-4h.1a1.700 1.700 0 0 0 1.500-1.100 1.700 1.700 0 0 0-.3-1.800l-.1-.1a2 2 0 1 1 2.800-2.800l.1.100a1.700 1.700 0 0 0 1.800.3H9a1.700 1.700 0 0 0 1-1.500V3a2 2 0 1 1 4 0v.1a1.700 1.700 0 0 0 1 1.500 1.700 1.700 0 0 0 1.800-.3l.1-.1a2 2 0 1 1 2.800 2.800l-.1.100a1.700 1.700 0 0 0-.3 1.800V9a1.700 1.700 0 0 0 1.500 1H21a2 2 0 1 1 0 4h-.1a1.700 1.700 0 0 0-1.500 1Z"/></svg>Settings</button>
+        <hr><h4>Help</h4>
+        <button class="it"><svg viewBox="0 0 24 24"><path d="M5 22V4M5 4h13l-2 4 2 4H5"/></svg>Report</button>
+        <button class="it"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Request a drink</button>
+        <hr><div class="foot"><a href="#about">About</a><a href="info.html?page=terms">Terms</a><a href="info.html?page=privacy">Privacy</a></div>
+      </div>
+  </div>
+  </div>
+</nav>
+
+<main id="main" tabindex="-1">
+<section class="hero" id="home">
+  <!-- HERO PHOTO: one per theme, images/hero-espresso.jpg, hero-paper.jpg, hero-snow.jpg, hero-midnight.jpg, hero-forest.jpg, hero-wine.jpg. A theme without its own photo uses images/hero.jpg, and the emoji shows if neither exists. -->
+  <div class="hero-bg"><span>☕</span></div>
+  <div class="wrap hero-copy">
+    <div class="chips">
+      <span class="chip"><svg class="star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9L6.6 19.600l1.100-6L3.200 9.400l6.100-.8L12 3Z"/></svg>4.9</span>
+      <span class="chip"><i class="dot" id="openDot"></i><span id="openTxt">Open now</span></span>
+      <span class="chip">8am to 1am</span>
+      <span class="chip">12 Garden Road</span>
+    </div>
+    <h1>Slow mornings, strong coffee.</h1>
+    <p class="lead">Small-batch roasts, pastries out of the oven by six, and a corner table with your name on it.</p>
+    <div class="cta">
+      <a class="btn glass" href="#menu"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Browse menu</a>
+      <a class="circle" href="#/settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.700 1.700 0 0 0 .3 1.800l.1.100a2 2 0 1 1-2.800 2.800l-.1-.1a1.700 1.700 0 0 0-1.800-.3 1.700 1.700 0 0 0-1 1.500V21a2 2 0 1 1-4 0v-.1a1.700 1.700 0 0 0-1.100-1.500 1.700 1.700 0 0 0-1.800.3l-.1.1a2 2 0 1 1-2.800-2.800l.1-.1a1.700 1.700 0 0 0 .3-1.800 1.700 1.700 0 0 0-1.500-1H3a2 2 0 1 1 0-4h.1a1.700 1.700 0 0 0 1.500-1.100 1.700 1.700 0 0 0-.3-1.800l-.1-.1a2 2 0 1 1 2.800-2.800l.1.100a1.700 1.700 0 0 0 1.800.3H9a1.700 1.700 0 0 0 1-1.500V3a2 2 0 1 1 4 0v.1a1.700 1.700 0 0 0 1 1.500 1.700 1.700 0 0 0 1.800-.3l.1-.1a2 2 0 1 1 2.800 2.800l-.1.100a1.700 1.700 0 0 0-.3 1.800V9a1.700 1.700 0 0 0 1.500 1H21a2 2 0 1 1 0 4h-.1a1.700 1.700 0 0 0-1.500 1Z"/></svg></a>
+      <button class="circle" id="themeBtn" aria-label="Switch light or dark theme"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg></button>
+    </div>
+  </div>
+  <div class="wrap" id="menu">
+    <div class="head">
+      <div class="ttl"><h2>Menu</h2><span class="count" id="menuCount">8</span></div>
+      <div class="filters" id="filters">
+        <span class="slider"></span><button class="on" data-f="All">All</button><button data-f="Coffee">Coffee</button><button data-f="Tea">Tea</button><button data-f="Pastry">Pastry</button><button data-f="Top">Top rated</button><button data-f="Saved">Saved</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="more-wrap" id="moreWrap" hidden><a class="more-pill" href="#/menu">View menu</a></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <h2 class="big rv">Made slowly, served warm, and never rushed.</h2>
+        <p class="lead2 rv">Oreo's Cafe started with one idea: a corner table, a good cup and no rush. Everything is roasted, baked and poured in-house, and the doors stay open late for anyone who needs a quiet place to land.</p>
+        <a class="btn solid rv" href="#reserve">Reserve a table</a>
+      </div>
+      <!-- photo: images/about.jpg (emoji shows if the file is missing) -->
+      <div class="photo rv" aria-hidden="true">☕<img src="images/about.jpg" alt=""></div>
+    </div>
+    <div class="three">
+      <div class="panel rv"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14Z"/><path d="M5 19c3-4 6-6 9-8"/></svg></div><h3>Roasted in-house</h3><p>Single-origin beans roasted every week, so every cup tastes fresh.</p></div>
+      <div class="panel rv"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 15a8 8 0 0 1 16 0v3H4v-3Z"/><path d="M9 10V7M15 10V7"/></svg></div><h3>Baked at 6am</h3><p>Croissants, rolls, and cakes come out of the oven before we open the doors.</p></div>
+      <div class="panel rv"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 1 1 9.500 4a6.500 6.500 0 0 0 10.500 10.500Z"/></svg></div><h3>Open till 1am</h3><p>Late-night study sessions welcome. Wi-Fi is fast and the chairs are comfy.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="reserve">
+  <div class="wrap split">
+    <div>
+      <h2 class="big rv">Reserve your perfect spot.</h2>
+      <p class="lead2 rv" style="margin-bottom:0">A catch-up, a celebration or a moment to yourself. Send your preferred date and time.</p>
+      <form class="form rv" id="resForm">
+        <label>Full name<input name="name" autocomplete="name" required maxlength="100"></label>
+        <label>Phone number<input name="phone" type="tel" autocomplete="tel" required maxlength="30"></label>
+        <label class="full">Email address<input name="email" type="email" autocomplete="email" required maxlength="160"></label>
+        <label>Date<input name="date" type="date" required></label>
+        <label>Time<input name="time" type="time" required></label>
+        <label class="full">Guests<select name="guests" required><option value="">Select guests</option><option>1 to 2</option><option>3 to 4</option><option>5 to 6</option><option>7 or more</option></select></label>
+        <label class="full">Special requests<textarea name="notes" rows="3" maxlength="1000"></textarea></label>
+        <p class="note full">This is a reservation request. Your table is confirmed only after the cafe contacts you.</p>
+        <button class="btn solid full" id="resSubmit" type="submit">Request a table</button>
+      </form>
+      <p class="ok" id="resOk" role="status" aria-live="polite"><span id="resOkText">Request received. We'll contact you soon to confirm your table.</span> <a class="ics" id="icsLink" download="oreos-cafe-reservation.ics" href="#">Add to calendar</a></p>
+    </div>
+    <!-- photo: images/reserve.jpg (emoji shows if the file is missing) -->
+    <div class="photo rv" aria-hidden="true">🧁<img src="images/reserve.jpg" alt=""></div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <div class="head rv"><div><h2>Inside the cafe</h2><p class="lead2" style="margin:6px 0 0">A few moments from the corner table. Tap a photo to see it bigger.</p></div></div>
+    <div class="gal rv" id="gal"></div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap"><div class="head rv"><h2>What people say</h2></div></div>
+  <div class="marq"><div class="rtrack" id="revTrack"></div></div>
+</section>
+
+<section id="visit">
+  <div class="wrap split">
+    <div>
+      <h2 class="big rv">Come say hi.</h2>
+      <p class="lead2 rv">12 Garden Road. Look for the corner table by the window, we'll keep it warm for you.</p>
+      <a class="btn solid rv" href="https://www.google.com/maps/search/?api=1&query=12%20Garden%20Road" target="_blank" rel="noopener">Get directions</a>
+    </div>
+    <ul class="hours rv" id="hours" aria-label="Opening hours"></ul>
+  </div>
+</section>
+
+<section id="menupage">
+  <div class="wrap">
+    <div class="head">
+      <div class="ttl"><h2>Browse menu</h2><span class="count" id="menuCount2">12 items</span></div>
+    </div>
+    <div class="toolbar">
+      <label class="searchbox"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="menuSearch" placeholder="Search the menu..." autocomplete="off"></label>
+      <div class="filters" id="filters2">
+        <span class="slider"></span><button class="on" data-f="All">All</button><button data-f="Coffee">Coffee</button><button data-f="Tea">Tea</button><button data-f="Pastry">Pastry</button><button data-f="Top">Top rated</button><button data-f="Saved">Saved</button>
+      </div>
+    </div>
+    <div class="grid" id="grid2"></div>
+    <p class="nomatch" hidden>Nothing here yet. Try another filter or search.</p>
+    <div class="more-wrap" id="loadWrap" hidden><button class="more-pill" type="button">Show more</button></div>
+  </div>
+</section>
+
+<section id="settings">
+  <div class="wrap">
+    <div class="head rv"><div><h2>Settings</h2><p>Make the site yours.</p></div></div>
+    <div class="themes rv">
+      <h3>Theme</h3><div class="sws" id="sws"></div>
+      <div class="row">
+        <div><strong>Follow system theme</strong><small>Paper in light mode, Espresso in dark mode.</small></div>
+        <button class="switch" id="sysSw" role="switch" aria-checked="true" aria-label="Follow system theme"></button>
+      </div>
+      <h3>Accent</h3><div class="dots" id="dots"></div>
+    </div>
+    <div class="themes rv" style="margin-top:20px">
+      <h3>Loyalty card</h3>
+      <div class="stamps" id="stamps"></div>
+      <small class="stampsub" id="stampTxt"></small>
+    </div>
+    <div class="themes rv" style="margin-top:20px">
+      <h3>General</h3>
+      <div class="row" style="margin-top:0;border-top:0"><div><strong>Interface language</strong><small>Browser language: English (UK)</small></div><span class="chip">English (UK)</span></div>
+      <div class="row"><div><strong>Performance mode</strong><small>Turns off blur and glass effects. Use it if the site feels laggy.</small></div><button class="switch" id="perfSw" role="switch" aria-checked="false" aria-label="Performance mode"></button></div>
+      <div class="row"><div><strong>Notifications</strong><small>Get told when your order is ready.</small></div><button class="switch dummy" role="switch" aria-checked="true" aria-label="Notifications"></button></div>
+      <div class="row"><div><strong>Text size</strong></div><div class="filters" id="sizes"><span class="slider"></span><button data-s="small">Small</button><button data-s="medium" class="on">Medium</button><button data-s="large">Large</button></div></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div class="fgrid">
+      <div class="fbrand">
+        <a class="logo" href="#home" aria-label="Oreo's Cafe home"><i>☕<img src="images/logo.png" alt=""></i>Oreo's Cafe</a>
+        <h4>Coffee. Pastries. And more.</h4>
+        <p>Crafted with care, served with warmth. A place for every moment.</p>
+        <div class="social-links"><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a><span aria-hidden="true">/</span><a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a></div>
+      </div>
+      <div><h4>Cafe</h4><a href="#about">About us</a><a href="info.html?page=story">Our story</a><a href="info.html?page=careers">Careers</a><a href="info.html?page=news">News and updates</a></div>
+      <div><h4>Menu</h4><a href="?filter=All#/menu">Beverages</a><a href="?filter=Coffee#/menu">Hot coffee</a><a href="?search=iced#/menu">Cold favourites</a><a href="?filter=Pastry#/menu">Pastries</a></div>
+      <div><h4>Visit</h4><a href="#reserve">Reserve a table</a><a href="#visit">Opening hours</a><a href="https://www.google.com/maps/search/?api=1&query=12%20Garden%20Road" target="_blank" rel="noopener">Find us</a><a href="info.html?page=contact">Contact us</a></div>
+      <div>
+        <h4>Connect with us</h4>
+        <p><a href="https://www.google.com/maps/search/?api=1&query=12%20Garden%20Road" target="_blank" rel="noopener">12 Garden Road</a><br>Open daily, 8am to 1am</p>
+        <p><a href="mailto:hello@oreoscafe.com">hello@oreoscafe.com</a></p>
+        <h4>Install our app</h4>
+        <div class="apps"><button class="chip install-app" type="button">Install web app</button><a class="chip" href="info.html?page=app">How to install</a></div>
+      </div>
+    </div>
+    <div class="fbar"><span>Brewed with love. Made for fun.</span><span>&copy; 2026 Oreo's Cafe. All rights reserved.</span><span class="legal-links"><a href="info.html?page=terms">Terms</a><span aria-hidden="true">/</span><a href="info.html?page=privacy">Privacy</a></span></div>
+  </div>
+</footer>
+
+<div class="modal" id="sr" aria-hidden="true">
+  <div class="sheet srsheet" role="dialog" aria-modal="true" aria-label="Search the menu">
+    <label class="srin"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="srIn" placeholder="Search the menu..." autocomplete="off"></label>
+    <ul class="srlist" id="srList"></ul>
+  </div>
+</div>
+<div class="modal" id="ks" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+    <button class="circle x" id="ksClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="mbody">
+      <h3>Keyboard shortcuts</h3>
+      <ul class="keys">
+        <li><span>Search the menu</span><span><kbd>Ctrl</kbd> <kbd>K</kbd> or <kbd>/</kbd></span></li>
+        <li><span>Show this panel</span><span><kbd>?</kbd></span></li>
+        <li><span>Close any popup</span><span><kbd>Esc</kbd></span></li>
+        <li><span>Move through search results</span><span><kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>Enter</kbd></span></li>
+        <li><span>Open a focused drink</span><span><kbd>Enter</kbd></span></li>
+        <li><span>Browse photos</span><span><kbd>&larr;</kbd> <kbd>&rarr;</kbd></span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="modal" id="lb" aria-hidden="true">
+  <div class="lbwrap" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="circle x" id="lbClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <button class="circle lbnav" id="lbPrev" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="lbimg" id="lbImg"></div>
+    <button class="circle lbnav" id="lbNext" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    <p class="lbcap" id="lbCap"></p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="data.js"></script>
+<script src="cart.js"></script>
+<script src="email.js"></script>
+<script src="firebase-service.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

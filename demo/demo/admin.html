@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" data-theme="espresso">
+<head>
+<script>try{var t=localStorage.getItem('oc-theme2');if(t&&t!=='system')document.documentElement.dataset.theme=t;}catch(e){}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#130e0b">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Oreo's Cafe administrator dashboard.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="admin.css">
+<title>Admin — Oreo's Cafe</title>
+</head>
+<body class="admin-body">
+<div class="admin-gate" id="adminGate">
+  <div class="gate-card">
+    <a class="logo" href="index.html"><i>☕<img src="images/logo.png" alt=""></i>Oreo's Cafe</a>
+    <div id="gateLogin">
+      <span class="gate-eyebrow">Cafe management</span><h1>Admin sign in</h1><p>Use your Firebase-authenticated administrator account.</p>
+      <div class="gate-notice" id="adminConfigNotice" hidden>Firebase is not configured. Add your web app credentials to <strong>firebase-config.js</strong>, then refresh this page.</div>
+      <form id="adminLoginForm" class="gate-form">
+        <label>Email address<input name="email" type="email" autocomplete="email" required placeholder="admin@example.com"></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Your password"></label>
+        <button class="admin-btn primary" type="submit">Sign in securely</button>
+      </form>
+      <div class="gate-divider">or</div>
+      <button class="admin-btn" id="adminGoogle" type="button">Continue with Google</button>
+      <div class="gate-message" id="adminLoginMessage" role="alert"></div>
+      <p class="gate-help">Need to create the admin user first? <a href="auth.html?next=admin.html">Sign up on the main website</a>. Then copy your Authentication UID into an active <strong>admins/{uid}</strong> document in Firestore.</p>
+    </div>
+    <div id="gateDenied" hidden>
+      <span class="gate-eyebrow">Access restricted</span><h1>This account is not an admin</h1><p id="deniedEmail"></p>
+      <div class="gate-notice">Dashboard access requires a Firestore document at <strong>admins/{your Authentication UID}</strong> with <strong>active: true</strong> (boolean). Create it through Firebase Console, then check again.</div>
+      <div class="gate-actions"><button class="admin-btn primary" id="deniedRefresh" type="button">Check access again</button><button class="admin-btn" id="deniedSignOut" type="button">Sign out</button><a class="admin-btn" href="index.html">Back to website</a></div>
+    </div>
+  </div>
+</div>
+<div class="admin-app" id="adminApp" hidden>
+  <aside class="admin-sidebar">
+    <a class="logo admin-brand" href="index.html"><i>☕<img src="images/logo.png" alt=""></i><span>Oreo's Cafe<small>Admin workspace</small></span></a>
+    <nav class="admin-nav" aria-label="Admin sections">
+      <button class="on" data-view="overview" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Overview</span></button>
+      <button data-view="products" type="button"><svg viewBox="0 0 24 24"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/><path d="M17 9h2a2 2 0 0 1 0 5h-2M8 3v2M12 3v2"/></svg><span>Products</span><b id="sidebarProductCount">0</b></button>
+      <button data-view="orders" type="button"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9 8h6M9 12h6"/></svg><span>Orders</span><b id="sidebarOrderCount">0</b></button>
+      <button data-view="reservations" type="button"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Reservations</span><b id="sidebarReservationCount">0</b></button>
+    </nav>
+    <div class="sidebar-bottom"><a href="index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M10 14 21 3M21 14v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h6"/></svg>View website</a><button id="adminSignOut" type="button"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M15 4h5a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-5"/></svg>Sign out</button></div>
+  </aside>
+  <main class="admin-main">
+    <header class="admin-topbar"><div><span id="viewEyebrow">Dashboard</span><h1 id="viewTitle">Good to see you.</h1></div><div class="admin-profile"><div><strong id="adminName">Administrator</strong><span id="adminEmail"></span></div><div class="admin-avatar" id="adminAvatar">A</div></div></header>
+    <div class="admin-alert" id="adminAlert" hidden></div>
+    <section class="admin-view" id="view-overview">
+      <div class="metric-grid">
+        <article class="metric-card"><div class="metric-icon">☕</div><div><span>Products</span><strong id="metricProducts">0</strong><small>Catalogue items</small></div></article>
+        <article class="metric-card"><div class="metric-icon">▤</div><div><span>Total orders</span><strong id="metricOrders">0</strong><small>All incoming orders</small></div></article>
+        <article class="metric-card"><div class="metric-icon">◷</div><div><span>Pending orders</span><strong id="metricPending">0</strong><small>Need your attention</small></div></article>
+        <article class="metric-card sales"><div class="metric-icon">$</div><div><span>Total sales</span><strong id="metricSales">$0.00</strong><small>Fulfilled orders</small></div></article>
+      </div>
+      <div class="overview-grid">
+        <section class="admin-panel chart-panel"><div class="panel-heading"><div><h2>Sales this week</h2><p>Fulfilled order revenue over the last 7 days</p></div><strong id="weekSales">$0.00</strong></div><div class="sales-chart" id="salesChart"></div></section>
+        <section class="admin-panel"><div class="panel-heading"><div><h2>Quick actions</h2><p>Keep the cafe up to date</p></div></div><div class="quick-actions"><button type="button" data-action="add-product"><span>＋</span><div><strong>Add a product</strong><small>Create a new menu item</small></div></button><button type="button" data-go="orders"><span>✓</span><div><strong>Fulfil orders</strong><small>Review pending orders</small></div></button><button type="button" data-go="reservations"><span>◷</span><div><strong>Table requests</strong><small>Confirm incoming reservations</small></div></button></div></section>
+      </div>
+      <div class="overview-grid lower">
+        <section class="admin-panel"><div class="panel-heading"><div><h2>Recent orders</h2><p>The latest customer activity</p></div><button class="admin-link" data-go="orders" type="button">View all →</button></div><div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody id="recentOrdersBody"></tbody></table></div></section>
+        <section class="admin-panel"><div class="panel-heading"><div><h2>Inventory watch</h2><p>Limited or unavailable products</p></div></div><div class="stock-list" id="stockList"></div></section>
+      </div>
+    </section>
+    <section class="admin-view" id="view-products" hidden>
+      <div class="section-toolbar"><div><h2>Product catalogue</h2><p>Add complete product details and a hosted image URL.</p></div><div class="toolbar-actions"><button class="admin-btn" id="seedProducts" type="button">Import starter menu</button><button class="admin-btn primary" id="addProduct" type="button">＋ Add product</button></div></div>
+      <div class="admin-panel"><div class="table-tools"><label class="admin-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="productSearch" placeholder="Search name, SKU or category…"></label><select id="productCategory" aria-label="Filter product category"><option value="All">All categories</option><option>Coffee</option><option>Tea</option><option>Pastry</option></select></div><div class="table-wrap"><table class="products-table"><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
+    </section>
+    <section class="admin-view" id="view-orders" hidden>
+      <div class="section-toolbar"><div><h2>Incoming orders</h2><p>Review customer details and move each order through fulfilment.</p></div><button class="admin-btn" id="exportOrders" type="button">Export CSV</button></div>
+      <div class="admin-panel"><div class="table-tools"><label class="admin-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="orderSearch" placeholder="Search order or customer…"></label><select id="orderStatus" aria-label="Filter order status"><option value="all">All statuses</option><option value="pending">Pending</option><option value="preparing">Preparing</option><option value="ready">Ready</option><option value="fulfilled">Fulfilled</option><option value="cancelled">Cancelled</option></select></div><div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Received</th><th>Status</th><th></th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
+    </section>
+    <section class="admin-view" id="view-reservations" hidden>
+      <div class="section-toolbar"><div><h2>Table requests</h2><p>Reservation emails and requests received from the website.</p></div></div>
+      <div class="admin-panel"><div class="table-wrap"><table><thead><tr><th>Guest</th><th>Date & time</th><th>Guests</th><th>Contact</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody id="reservationsBody"></tbody></table></div></div>
+    </section>
+  </main>
+</div>
+<div class="admin-modal" id="productModal" aria-hidden="true">
+  <div class="admin-dialog product-dialog" role="dialog" aria-modal="true" aria-labelledby="productFormTitle">
+    <div class="dialog-head"><div><span>Catalogue</span><h2 id="productFormTitle">Add product</h2></div><button class="dialog-close" data-close="productModal" type="button" aria-label="Close">×</button></div>
+    <form id="productForm" class="product-form">
+      <div class="product-form-fields">
+        <div class="form-grid">
+          <label>Product name<input name="name" required maxlength="120" placeholder="e.g. Spanish Latte"></label>
+          <label>Category<select name="category"><option>Coffee</option><option>Tea</option><option>Pastry</option></select></label>
+          <label>Base price ($)<input name="price" type="number" min="0" step="0.01" required></label>
+          <label>SKU<input name="sku" maxlength="80" placeholder="COF-001"></label>
+          <label>Stock<input name="stock" type="number" min="0" step="1" placeholder="Blank = unlimited"></label>
+          <label>Rating (0–5)<input name="rating" type="number" min="0" max="5" step="0.1" value="4.8"></label>
+          <label>Emoji<input name="emoji" maxlength="8" value="☕"></label>
+          <label>Image colour (0–360)<input name="hue" type="number" min="0" max="360" value="28"></label>
+          <label>Preparation time<input name="prepTime" maxlength="80" placeholder="4–6 min"></label>
+          <label>Calories<input name="calories" type="number" min="0" step="1" placeholder="Optional"></label>
+          <label class="full">Image URL<input name="image" type="text" placeholder="https://example.com/product.jpg"><small>Use a direct HTTPS image address. You can also use images/product.jpg in the project.</small></label>
+          <label class="full">Short description<input name="description" required maxlength="500" placeholder="A concise description for menu cards"></label>
+          <label class="full">Full description<textarea name="longDescription" rows="3" maxlength="2000" placeholder="Flavour, preparation and what makes it special"></textarea></label>
+          <label class="full">Ingredients<textarea name="ingredients" rows="2" maxlength="600" placeholder="Espresso, milk, …"></textarea></label>
+        </div>
+        <fieldset><legend>Drink size price changes</legend><div class="form-grid three"><label>Small (+/- $)<input name="smallDelta" type="number" step="0.01" value="-0.50"></label><label>Medium (+/- $)<input name="mediumDelta" type="number" step="0.01" value="0"></label><label>Large (+/- $)<input name="largeDelta" type="number" step="0.01" value="0.70"></label></div></fieldset>
+        <div class="check-row"><label><input name="available" type="checkbox" checked> Available on the website</label><label><input name="featured" type="checkbox"> Mark as featured</label></div>
+      </div>
+      <aside class="image-preview"><span>Image preview</span><div id="productImagePreview">☕</div><small>Emoji and brand colours appear automatically if the image cannot load.</small></aside>
+      <div class="dialog-error" id="productFormError" role="alert"></div>
+      <div class="dialog-actions"><button class="admin-btn" data-close="productModal" type="button">Cancel</button><button class="admin-btn danger" id="deleteProduct" type="button" hidden>Delete</button><button class="admin-btn primary" id="saveProduct" type="submit">Save product</button></div>
+    </form>
+  </div>
+</div>
+<div class="admin-modal" id="orderModal" aria-hidden="true"><div class="admin-dialog order-dialog" role="dialog" aria-modal="true" aria-labelledby="orderDialogTitle"><div class="dialog-head"><div><span>Order details</span><h2 id="orderDialogTitle">Order</h2></div><button class="dialog-close" data-close="orderModal" type="button" aria-label="Close">×</button></div><div id="orderDetails"></div></div></div>
+<div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="data.js"></script>
+<script src="firebase-service.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

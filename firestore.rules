@@ -1,0 +1,179 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid))
+          .data.get('active', false) == true;
+    }
+
+    match /admins/{adminId} {
+      allow get: if signedIn() && request.auth.uid == adminId;
+      allow list: if false;
+      allow create, update, delete: if false;
+    }
+
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read, create, update: if signedIn() &&
+        request.auth.uid == userId;
+      allow read, update, delete: if isAdmin();
+    }
+
+    function validOrder() {
+      let data = request.resource.data;
+
+      return data.keys().hasAll([
+          'orderNumber', 'customer', 'orderType', 'address',
+          'city', 'notes', 'paymentMethod', 'items', 'subtotal',
+          'deliveryFee', 'total', 'currency', 'source', 'status',
+          'userId', 'createdAt'
+        ]) &&
+        data.orderNumber is string &&
+        data.orderNumber.size() <= 40 &&
+        data.customer is map &&
+        data.customer.name is string &&
+        data.customer.name.size() >= 2 &&
+        data.customer.name.size() <= 100 &&
+        data.customer.email is string &&
+        data.customer.email.size() >= 3 &&
+        data.customer.email.size() <= 160 &&
+        data.customer.phone is string &&
+        data.customer.phone.size() >= 5 &&
+        data.customer.phone.size() <= 30 &&
+        data.orderType in ['pickup', 'delivery'] &&
+        data.address is string &&
+        data.address.size() <= 240 &&
+        data.city is string &&
+        data.city.size() <= 100 &&
+        data.notes is string &&
+        data.notes.size() <= 600 &&
+        data.paymentMethod in ['Pay at cafe', 'Cash on delivery'] &&
+        data.items is list &&
+        data.items.size() > 0 &&
+        data.items.size() <= 50 &&
+        data.subtotal is number &&
+        data.subtotal > 0 &&
+        data.subtotal <= 100000 &&
+        data.deliveryFee is number &&
+        data.deliveryFee >= 0 &&
+        data.deliveryFee <= 100 &&
+        data.total is number &&
+        data.total > 0 &&
+        data.total <= 100100 &&
+        data.total >= data.subtotal + data.deliveryFee - 0.01 &&
+        data.total <= data.subtotal + data.deliveryFee + 0.01 &&
+        data.currency == 'USD' &&
+        data.source == 'website' &&
+        data.status == 'pending' &&
+        data.userId is string &&
+        (
+          data.userId == '' ||
+          (
+            signedIn() &&
+            data.userId == request.auth.uid
+          )
+        ) &&
+        data.createdAt == request.time;
+    }
+
+    match /orders/{orderId} {
+      allow create: if validOrder();
+
+      allow get, list: if isAdmin() ||
+        (
+          signedIn() &&
+          resource.data.userId == request.auth.uid
+        );
+
+      allow update, delete: if isAdmin();
+    }
+
+    function validReservation() {
+      let data = request.resource.data;
+
+      return data.keys().hasAll([
+          'name', 'phone', 'email', 'date', 'time',
+          'guests', 'notes', 'source', 'status',
+          'emailStatus', 'createdAt'
+        ]) &&
+        data.name is string &&
+        data.name.size() >= 2 &&
+        data.name.size() <= 100 &&
+        data.phone is string &&
+        data.phone.size() >= 5 &&
+        data.phone.size() <= 30 &&
+        data.email is string &&
+        data.email.size() >= 3 &&
+        data.email.size() <= 160 &&
+        data.date is string &&
+        data.date.size() == 10 &&
+        data.time is string &&
+        data.time.size() <= 10 &&
+        data.guests is string &&
+        data.guests.size() <= 30 &&
+        data.notes is string &&
+        data.notes.size() <= 1000 &&
+        data.source == 'website' &&
+        data.status == 'pending' &&
+        data.emailStatus == 'browser' &&
+        data.createdAt == request.time;
+    }
+
+    match /reservations/{reservationId} {
+      allow create: if validReservation();
+      allow read, update, delete: if isAdmin();
+    }
+
+    function validMessage() {
+      let data = request.resource.data;
+
+      return data.keys().hasAll([
+          'type', 'name', 'email', 'phone', 'orderNumber',
+          'subject', 'message', 'source', 'status',
+          'emailStatus', 'createdAt'
+        ]) &&
+        data.type in ['contact', 'complaint'] &&
+        data.name is string &&
+        data.name.size() >= 2 &&
+        data.name.size() <= 100 &&
+        data.email is string &&
+        data.email.size() >= 3 &&
+        data.email.size() <= 160 &&
+        data.phone is string &&
+        data.phone.size() <= 30 &&
+        data.orderNumber is string &&
+        data.orderNumber.size() <= 40 &&
+        data.subject is string &&
+        data.subject.size() >= 3 &&
+        data.subject.size() <= 160 &&
+        data.message is string &&
+        data.message.size() >= 10 &&
+        data.message.size() <= 2000 &&
+        data.source == 'website' &&
+        data.status == 'new' &&
+        data.emailStatus == 'browser' &&
+        data.createdAt == request.time;
+    }
+
+    match /messages/{messageId} {
+      allow create: if validMessage();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="espresso">
+<head>
+<script>try{var t=localStorage.getItem('oc-theme2');if(t==='system')delete document.documentElement.dataset.theme;else if(t)document.documentElement.dataset.theme=t;var p=localStorage.getItem('oc-perf');if(p==='1')document.documentElement.dataset.perf='on';var s=localStorage.getItem('oc-ts');if(s)document.documentElement.dataset.ts=s;}catch(e){}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#130e0b">
+<meta name="description" content="Enter your details and place your Oreo's Cafe order.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<title>Checkout — Oreo's Cafe</title>
+</head>
+<body>
+<a class="skip" href="#checkoutMain">Skip to checkout</a>
+<header class="subnav">
+  <a class="logo" href="index.html"><i>☕<img src="images/logo.png" alt=""></i>Oreo's Cafe</a>
+  <div class="subnav-actions"><a class="order-link" href="index.html#/menu"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Continue shopping</a></div>
+</header>
+<main class="subpage" id="checkoutMain">
+  <div id="checkoutContent">
+    <div class="subpage-head"><span class="eyebrow">Your order</span><h1>Checkout</h1><p>Tell us where to find you and how you would like to receive your order. No card details are collected.</p></div>
+    <div id="checkoutNotice" class="inline-notice" style="margin-bottom:20px" hidden></div>
+    <div class="checkout-layout" id="checkoutLayout">
+      <form class="checkout-form" id="checkoutForm">
+        <section class="checkout-section">
+          <h2>1. Personal details</h2><p>We use these details only to prepare and manage this order.</p>
+          <div class="form">
+            <label>Full name<input name="name" autocomplete="name" required maxlength="100" placeholder="Your full name"></label>
+            <label>Phone number<input name="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="Your phone number"></label>
+            <label class="full">Email address<input name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@example.com"></label>
+          </div>
+        </section>
+        <section class="checkout-section">
+          <h2>2. Receive your order</h2><p>Collect from 12 Garden Road, or have it delivered to you.</p>
+          <div class="choice-grid">
+            <label class="choice"><input type="radio" name="orderType" value="pickup" checked><span>Pickup<small>Ready at the cafe · No delivery fee</small></span></label>
+            <label class="choice"><input type="radio" name="orderType" value="delivery"><span>Delivery<small>Delivered to your address · $2.50</small></span></label>
+          </div>
+          <div class="form" id="addressFields" hidden>
+            <label class="full">Delivery address<input name="address" autocomplete="street-address" maxlength="240" placeholder="House, street and area"></label>
+            <label class="full">City / area<input name="city" autocomplete="address-level2" maxlength="100" placeholder="Your city or area"></label>
+          </div>
+          <div class="form"><label class="full">Order notes<textarea name="notes" rows="3" maxlength="600" placeholder="Allergies, delivery instructions or anything we should know"></textarea></label></div>
+        </section>
+        <section class="checkout-section">
+          <h2>3. Payment</h2><p id="paymentText">Pay at the counter when you collect your order. This website does not request or store card details.</p>
+          <div class="inline-notice" id="paymentNotice" style="margin-top:14px">Pay at cafe · No online payment needed</div>
+        </section>
+        <p class="inline-notice">By placing this order, you agree to our <a href="info.html?page=terms">terms</a> and <a href="info.html?page=privacy">privacy policy</a>.</p>
+        <div class="auth-message error" id="checkoutError" role="alert"></div>
+      </form>
+      <aside class="panel-card order-summary" aria-label="Order summary">
+        <h2>Order summary</h2><div class="summary-items" id="summaryItems"></div>
+        <div class="summary-totals"><div><span>Subtotal</span><span id="subtotal">$0.00</span></div><div><span>Delivery</span><span id="deliveryFee">Free</span></div><div class="grand-total"><span>Total</span><span id="grandTotal">$0.00</span></div></div>
+        <button class="btn solid checkout-submit" id="placeOrder" type="submit" form="checkoutForm">Place order</button>
+      </aside>
+    </div>
+  </div>
+</main>
+<footer class="simple-footer"><div class="simple-footer-inner"><span>&copy; 2026 Oreo's Cafe</span><div class="simple-footer-links"><a href="index.html#reserve">Reserve a table</a><a href="info.html?page=contact">Contact</a><a href="info.html?page=terms">Terms</a><a href="info.html?page=privacy">Privacy</a></div></div></footer>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="data.js"></script>
+<script src="cart.js"></script>
+<script src="firebase-service.js"></script>
+<script src="checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Dependencies and local runtime files
+node_modules/
+functions/node_modules/
+*.log
+
+# Firebase local state and private service-account files
+.firebase/
+.firebaserc
+runtimeconfig.json
+**/serviceAccount*.json
+**/service-account*.json
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/

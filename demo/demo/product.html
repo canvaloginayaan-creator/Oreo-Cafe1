@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-theme="espresso">
+<head>
+<script>try{var t=localStorage.getItem('oc-theme2');if(t==='system')delete document.documentElement.dataset.theme;else if(t)document.documentElement.dataset.theme=t;var p=localStorage.getItem('oc-perf');if(p==='1')document.documentElement.dataset.perf='on';var s=localStorage.getItem('oc-ts');if(s)document.documentElement.dataset.ts=s;}catch(e){}</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#130e0b">
+<meta name="description" content="View product details and order from Oreo's Cafe.">
+<link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<title>Product — Oreo's Cafe</title>
+</head>
+<body>
+<a class="skip" href="#productMain">Skip to product</a>
+<header class="subnav">
+  <a class="logo" href="index.html"><i>☕<img src="images/logo.png" alt=""></i>Oreo's Cafe</a>
+  <div class="subnav-actions">
+    <a class="auth-pill" id="authLink" href="auth.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span id="authText">Log in</span></a>
+    <a class="order-link" href="checkout.html" aria-label="View cart and checkout"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg><span>Cart</span><b id="cartCount">0</b></a>
+  </div>
+</header>
+<main class="subpage" id="productMain">
+  <div class="breadcrumbs" role="navigation" aria-label="Breadcrumb"><a href="index.html">Home</a><span>/</span><a href="index.html#/menu">Menu</a><span>/</span><span id="breadcrumbName">Product</span></div>
+  <div id="productContent"><div class="loading-state">Preparing the menu…</div></div>
+  <section class="related-section" id="relatedSection" hidden><h2>You may also like</h2><div class="related-grid" id="relatedGrid"></div></section>
+</main>
+<footer class="simple-footer"><div class="simple-footer-inner"><span>&copy; 2026 Oreo's Cafe</span><div class="simple-footer-links"><a href="index.html#reserve">Reserve a table</a><a href="info.html?page=contact">Contact</a><a href="info.html?page=terms">Terms</a><a href="info.html?page=privacy">Privacy</a></div></div></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="data.js"></script>
+<script src="cart.js"></script>
+<script src="firebase-service.js"></script>
+<script src="product.js"></script>
+</body>
+</html>

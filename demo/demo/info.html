@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" data-theme="espresso">
+
+<head>
+  <script>
+    try {
+      var t = localStorage.getItem('oc-theme2');
+      if (t === 'system') {
+        delete document.documentElement.dataset.theme;
+      } else if (t) {
+        document.documentElement.dataset.theme = t;
+      }
+
+      var p = localStorage.getItem('oc-perf');
+      if (p === '1') {
+        document.documentElement.dataset.perf = 'on';
+      }
+
+      var s = localStorage.getItem('oc-ts');
+      if (s) {
+        document.documentElement.dataset.ts = s;
+      }
+    } catch (e) { }
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#130e0b">
+  <meta name="description" content="Information about Oreo's Cafe.">
+
+  <link rel="icon" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+
+  <title>Information — Oreo's Cafe</title>
+</head>
+
+<body>
+  <header class="subnav">
+    <a class="logo" href="index.html">
+      <i>☕<img src="images/logo.png" alt=""></i>
+      Oreo's Cafe
+    </a>
+
+    <div class="subnav-actions">
+      <a class="auth-pill" href="auth.html">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21a8 8 0 0 1 16 0" />
+        </svg>
+        <span>Account</span>
+      </a>
+
+      <a class="order-link" href="index.html#/menu">Browse menu</a>
+    </div>
+  </header>
+
+  <main class="subpage">
+    <div class="info-content" id="infoContent">
+      <div class="loading-state">Loading…</div>
+    </div>
+
+    <section class="panel-card" id="messagePanel" style="max-width:820px;margin-top:18px">
+      <h2>Send us a message</h2>
+
+      <p style="color:var(--muted);margin:8px 0 18px">
+        Ask a question or submit a complaint. We will receive it by email.
+      </p>
+
+      <form class="form" id="messageForm">
+        <label>
+          Message type
+          <select name="type" required>
+            <option value="contact">Contact / general question</option>
+            <option value="complaint">Complaint</option>
+          </select>
+        </label>
+
+        <label>
+          Full name
+          <input name="name" required minlength="2" maxlength="100" autocomplete="name">
+        </label>
+
+        <label>
+          Email address
+          <input name="email" type="email" required maxlength="160" autocomplete="email">
+        </label>
+
+        <label>
+          Phone number (optional)
+          <input name="phone" type="tel" maxlength="30" autocomplete="tel">
+        </label>
+
+        <label>
+          Order number (optional)
+          <input name="orderNumber" maxlength="40" placeholder="For order complaints">
+        </label>
+
+        <label>
+          Subject
+          <input name="subject" required minlength="3" maxlength="160">
+        </label>
+
+        <label class="full">
+          Message
+          <textarea name="message" rows="5" required minlength="10" maxlength="2000"></textarea>
+        </label>
+
+        <button class="btn solid full" id="messageSubmit" type="submit">
+          Send message
+        </button>
+      </form>
+
+      <p class="auth-message" id="messageStatus" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer class="simple-footer">
+    <div class="simple-footer-inner">
+      <span>&copy; 2026 Oreo's Cafe</span>
+
+      <div class="simple-footer-links">
+        <a href="info.html?page=story">Our story</a>
+        <a href="info.html?page=careers">Careers</a>
+        <a href="info.html?page=contact">Contact</a>
+        <a href="info.html?page=terms">Terms</a>
+        <a href="info.html?page=privacy">Privacy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
+  <script src="firebase-config.js"></script>
+  <script src="data.js"></script>
+  <script src="email.js"></script>
+  <script src="firebase-service.js"></script>
+  <script src="info.js"></script>
+  <script src="contact.js"></script>
+</body>
+
+</html>
