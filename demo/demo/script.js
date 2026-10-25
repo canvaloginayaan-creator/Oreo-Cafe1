@@ -182,7 +182,7 @@ function setupMenu(gridEl, filtersEl, countEl, options) {
       ...new Set(
         PRODUCTS
           .map((product) => product.category)
-          .filter(Boolean)
+          .filter((category) => category && category !== "__new__")
       )
     ].sort((a, b) => a.localeCompare(b));
 
