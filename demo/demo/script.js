@@ -11,23 +11,16 @@ const reduceMotion = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
 const store = {
   get(key) {
-    try {
-      return localStorage.getItem(key);
-    } catch (error) {
-      return null;
-    }
+    try { return localStorage.getItem(key); }
+    catch (error) { return null; }
   },
-
   set(key, value) {
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {}
+    try { localStorage.setItem(key, value); }
+    catch (error) {}
   },
-
   del(key) {
-    try {
-      localStorage.removeItem(key);
-    } catch (error) {}
+    try { localStorage.removeItem(key); }
+    catch (error) {}
   }
 };
 
@@ -43,17 +36,9 @@ const THEMES = [
 ];
 
 const ACCENTS = [
-  "#d98b73",
-  "#e5734f",
-  "#c9453c",
-  "#d9a066",
-  "#e8b04a",
-  "#7fb88a",
-  "#4fb3a5",
-  "#6fa8d6",
-  "#8c8fe0",
-  "#b79ae0",
-  "#e08ab8"
+  "#d98b73", "#e5734f", "#c9453c", "#d9a066",
+  "#e8b04a", "#7fb88a", "#4fb3a5", "#6fa8d6",
+  "#8c8fe0", "#b79ae0", "#e08ab8"
 ];
 
 const toastEl = $("#toast");
@@ -63,10 +48,7 @@ function toast(message) {
   toastEl.textContent = message;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(
-    () => toastEl.classList.remove("show"),
-    2800
-  );
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2800);
 }
 
 function productUrl(product) {
@@ -74,26 +56,17 @@ function productUrl(product) {
 }
 
 function art(product) {
-  return (
-    esc(product.emoji) +
-    (
-      product.image
-        ? `<img src="${esc(product.image)}" alt="" loading="lazy">`
-        : ""
-    )
-  );
+  return esc(product.emoji) +
+    (product.image ? `<img src="${esc(product.image)}" alt="" loading="lazy">` : "");
 }
 
+/* Menu grids */
+
 const cols = () =>
-  matchMedia("(max-width:560px)").matches
-    ? 2
-    : matchMedia("(max-width:760px)").matches
-      ? 3
-      : matchMedia("(max-width:980px)").matches
-        ? 4
-        : matchMedia("(max-width:1180px)").matches
-          ? 5
-          : 6;
+  matchMedia("(max-width:560px)").matches ? 2 :
+  matchMedia("(max-width:760px)").matches ? 3 :
+  matchMedia("(max-width:980px)").matches ? 4 :
+  matchMedia("(max-width:1180px)").matches ? 5 : 6;
 
 const homeLimit = () => cols() === 2 ? 6 : cols() * 2;
 const pageSize = () => cols() === 2 ? 8 : Infinity;
@@ -101,9 +74,7 @@ const pageSize = () => cols() === 2 ? 8 : Infinity;
 let favs;
 
 try {
-  favs = new Set(
-    JSON.parse(store.get("oc-favs-v2") || "[]")
-  );
+  favs = new Set(JSON.parse(store.get("oc-favs-v2") || "[]"));
 } catch (error) {
   favs = new Set();
 }
@@ -112,128 +83,52 @@ function cardHTML(product) {
   const saved = favs.has(product.id);
   const soldOut = product.stock === 0;
 
-  return `
-    <article
-      class="card rv in${soldOut ? " unavailable" : ""}"
-      data-id="${esc(product.id)}"
-      data-c="${esc(product.category)}"
-      tabindex="0"
-      role="link"
-      aria-label="${esc(product.name)}, ${money(product.price)}. View details"
-      style="--h:${product.hue}"
-    >
-      <div class="img" aria-hidden="true">${art(product)}</div>
+  return `<article class="card rv in${soldOut ? " unavailable" : ""}" data-id="${esc(product.id)}" data-c="${esc(product.category)}" tabindex="0" role="link" aria-label="${esc(product.name)}, ${money(product.price)}. View details" style="--h:${product.hue}">
+    <div class="img" aria-hidden="true">${art(product)}</div>
+    ${soldOut ? '<span class="sold-out">Sold out</span>' : ""}
 
-      ${soldOut ? '<span class="sold-out">Sold out</span>' : ""}
+    <button class="fav" data-fav="${esc(product.id)}" aria-label="${saved ? "Remove" : "Save"} ${esc(product.name)}" aria-pressed="${saved}">
+      <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+    </button>
 
-      <button
-        class="fav"
-        data-fav="${esc(product.id)}"
-        aria-label="${saved ? "Remove" : "Save"} ${esc(product.name)}"
-        aria-pressed="${saved}"
-      >
-        <svg viewBox="0 0 24 24">
-          <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>
-        </svg>
-      </button>
+    <button class="add" data-add="${esc(product.id)}" aria-label="Add ${esc(product.name)} to order" ${soldOut ? "disabled" : ""}>
+      <svg viewBox="0 0 24 24">
+        <path class="plus" d="M12 5v14M5 12h14"/>
+        <path class="tick" d="M5 13l4 4L19 7"/>
+      </svg>
+    </button>
 
-      <button
-        class="add"
-        data-add="${esc(product.id)}"
-        aria-label="Add ${esc(product.name)} to order"
-        ${soldOut ? "disabled" : ""}
-      >
-        <svg viewBox="0 0 24 24">
-          <path class="plus" d="M12 5v14M5 12h14"/>
-          <path class="tick" d="M5 13l4 4L19 7"/>
-        </svg>
-      </button>
-
-      <div class="meta">
-        <h3>${esc(product.name)}</h3>
-        <p>
-          <span>${esc(product.category)}</span>
-          <span>${money(product.price)}</span>
-          <span class="rt">
-            <svg viewBox="0 0 24 24">
-              <polygon points="12,2 15.1,8.6 22,9.3 16.8,14 18.2,21 12,17.5 5.8,21 7.2,14 2,9.3 8.9,8.6"/>
-            </svg>
-            ${product.rating.toFixed(1)}
-          </span>
-        </p>
-      </div>
-    </article>
-  `;
+    <div class="meta">
+      <h3>${esc(product.name)}</h3>
+      <p>
+        <span>${esc(product.category)}</span>
+        <span>${money(product.price)}</span>
+        <span class="rt">
+          <svg viewBox="0 0 24 24"><polygon points="12,2 15.1,8.6 22,9.3 16.8,14 18.2,21 12,17.5 5.8,21 7.2,14 2,9.3 8.9,8.6"/></svg>
+          ${product.rating.toFixed(1)}
+        </span>
+      </p>
+    </div>
+  </article>`;
 }
 
-function apply() {
-  // Rebuild the home preview when its category changes.
-  if (options.pill) render();
+function setupMenu(gridEl, filtersEl, countEl, options) {
+  let cards = [];
+  let category = "All";
+  let query = "";
+  let visible = Infinity;
+  let filterSignature = "";
 
-  gridEl.classList.add("swap");
-
-  setTimeout(() => {
-    show(true);
-    gridEl.classList.remove("swap");
-  }, 120);
-}
-
-  const none =
-    gridEl.parentElement &&
+  const none = gridEl.parentElement &&
     gridEl.parentElement.querySelector(".nomatch");
 
-  function render() {
-  renderFilters();
-
-  visible = options.page ? options.page() : Infinity;
-
-  const limit = options.limit();
-
-  const matches = (product) =>
-    (
-      category === "All" ||
-      (
-        category === "Top"
-          ? product.rating >= 4.8
-          : category === "Saved"
-            ? favs.has(product.id)
-            : product.category === category
+  function renderFilters() {
+    const categories = [
+      ...new Set(
+        PRODUCTS
+          .map((product) => product.category)
+          .filter((category) => category && category !== "__new__")
       )
-    ) &&
-    (
-      !query ||
-      (
-        product.name +
-        " " +
-        product.category +
-        " " +
-        product.description
-      )
-        .toLowerCase()
-        .includes(query)
-    );
-
-  // For the home preview, select products from the chosen category
-  // before applying the preview limit.
-  const source =
-    options.pill && category !== "All"
-      ? PRODUCTS.filter(matches)
-      : PRODUCTS;
-
-  gridEl.innerHTML = source
-    .slice(0, limit)
-    .map(cardHTML)
-    .join("");
-
-  cards = [...gridEl.querySelectorAll(".card")];
-
-  show(false);
-
-  if (options.pill) {
-    options.pill.hidden = PRODUCTS.length <= limit;
-  }
-}
-Do not change ad
     ].sort((a, b) => a.localeCompare(b));
 
     const signature = JSON.stringify(categories);
@@ -247,25 +142,36 @@ Do not change ad
     }
 
     filtersEl.innerHTML =
-      '<span class="slider"></span>' +
-      '<button data-f="All">All</button>' +
+      '<span class="slider"></span><button data-f="All">All</button>' +
       categories
-        .map(
-          (name) =>
-            `<button data-f="${esc(name)}">${esc(name)}</button>`
-        )
+        .map((name) => `<button data-f="${esc(name)}">${esc(name)}</button>`)
         .join("") +
-      '<button data-f="Top">Top rated</button>' +
-      '<button data-f="Saved">Saved</button>';
+      '<button data-f="Top">Top rated</button><button data-f="Saved">Saved</button>';
 
     filtersEl.querySelectorAll("button").forEach((button) => {
-      button.classList.toggle(
-        "on",
-        button.dataset.f === category
-      );
+      button.classList.toggle("on", button.dataset.f === category);
     });
 
     slide(filtersEl);
+  }
+
+  function matches(product) {
+    return (
+      category === "All" ||
+      (
+        category === "Top"
+          ? product.rating >= 4.8
+          : category === "Saved"
+            ? favs.has(product.id)
+            : product.category === category
+      )
+    ) &&
+    (
+      !query ||
+      (product.name + " " + product.category + " " + product.description)
+        .toLowerCase()
+        .includes(query)
+    );
   }
 
   function show(animate) {
@@ -273,35 +179,10 @@ Do not change ad
     let shown = 0;
 
     cards.forEach((card) => {
-      const product = PRODUCTS.find(
-        (item) => item.id === card.dataset.id
-      );
-
+      const product = PRODUCTS.find((item) => item.id === card.dataset.id);
       if (!product) return;
 
-      const hit =
-        (
-          category === "All" ||
-          (
-            category === "Top"
-              ? product.rating >= 4.8
-              : category === "Saved"
-                ? favs.has(product.id)
-                : product.category === category
-          )
-        ) &&
-        (
-          !query ||
-          (
-            product.name +
-            " " +
-            product.category +
-            " " +
-            product.description
-          )
-            .toLowerCase()
-            .includes(query)
-        );
+      const hit = matches(product);
 
       if (hit) total++;
 
@@ -312,22 +193,21 @@ Do not change ad
 
       if (on && animate) {
         void card.offsetWidth;
-        card.style.animationDelay = shown++ * 40 + "ms";
+        card.style.animationDelay = (shown++ * 40) + "ms";
         card.classList.add("pop");
       }
     });
 
-    countEl.textContent =
-      total + (total === 1 ? " item" : " items");
+    countEl.textContent = total + (total === 1 ? " item" : " items");
 
     if (none) none.hidden = total > 0;
-
-    if (options.more) {
-      options.more.hidden = total <= visible;
-    }
+    if (options.more) options.more.hidden = total <= visible;
   }
 
   function apply() {
+    // Rebuild the home preview when its category changes.
+    if (options.pill) render();
+
     gridEl.classList.add("swap");
 
     setTimeout(() => {
@@ -343,7 +223,14 @@ Do not change ad
 
     const limit = options.limit();
 
-    gridEl.innerHTML = PRODUCTS
+    // For the home preview, select products from the chosen category
+    // before applying the preview limit.
+    const source =
+      options.pill && category !== "All"
+        ? PRODUCTS.filter(matches)
+        : PRODUCTS;
+
+    gridEl.innerHTML = source
       .slice(0, limit)
       .map(cardHTML)
       .join("");
@@ -359,7 +246,6 @@ Do not change ad
 
   filtersEl.addEventListener("click", (event) => {
     const button = event.target.closest("button");
-
     if (!button) return;
 
     category = button.dataset.f;
@@ -400,10 +286,7 @@ Do not change ad
       query = (nextQuery || "").toLowerCase();
 
       filtersEl.querySelectorAll("button").forEach((button) => {
-        button.classList.toggle(
-          "on",
-          button.dataset.f === category
-        );
+        button.classList.toggle("on", button.dataset.f === category);
       });
 
       if (options.search) {
@@ -456,6 +339,7 @@ addEventListener("resize", () => {
 
 window.OreoFirebase.onProducts((products) => {
   PRODUCTS = products;
+
   homeMenu.refresh();
   fullMenu.refresh();
 
@@ -464,6 +348,8 @@ window.OreoFirebase.onProducts((products) => {
   }
 });
 
+/* Favourites and product navigation */
+
 function toggleFavourite(id) {
   if (favs.has(id)) {
     favs.delete(id);
@@ -471,10 +357,7 @@ function toggleFavourite(id) {
     favs.add(id);
   }
 
-  store.set(
-    "oc-favs-v2",
-    JSON.stringify([...favs])
-  );
+  store.set("oc-favs-v2", JSON.stringify([...favs]));
 
   $$(`[data-fav="${CSS.escape(id)}"]`).forEach((button) => {
     const on = favs.has(id);
@@ -542,6 +425,8 @@ function cardClick(event) {
   });
 });
 
+/* Shared cart drawer */
+
 const cartEl = $("#cart");
 
 function cartLabel(item) {
@@ -555,14 +440,8 @@ function cartLabel(item) {
     options.push(addon.name);
   });
 
-  return (
-    item.name +
-    (
-      options.length
-        ? " (" + options.join(", ") + ")"
-        : ""
-    )
-  );
+  return item.name +
+    (options.length ? " (" + options.join(", ") + ")" : "");
 }
 
 function drawCart() {
@@ -571,57 +450,29 @@ function drawCart() {
 
   $("#count").textContent = totals.count;
 
-  const rows = items
-    .map(
-      (item) => `
-        <li>
-          <span class="cart-item-name">${esc(cartLabel(item))}</span>
+  const rows = items.map((item) =>
+    `<li>
+      <span class="cart-item-name">${esc(cartLabel(item))}</span>
 
-          <span class="qty">
-            <button
-              data-q="-1"
-              data-key="${esc(item.key)}"
-              aria-label="Remove one ${esc(item.name)}"
-            >−</button>
+      <span class="qty">
+        <button data-q="-1" data-key="${esc(item.key)}" aria-label="Remove one ${esc(item.name)}">&minus;</button>
+        <b>${item.quantity}</b>
+        <button data-q="1" data-key="${esc(item.key)}" aria-label="Add one ${esc(item.name)}" ${item.quantity >= window.OreoCart.MAX_QUANTITY ? "disabled" : ""}>+</button>
+      </span>
 
-            <b>${item.quantity}</b>
+      <span class="price">${money(window.OreoCart.unitPrice(item) * item.quantity)}</span>
+    </li>`
+  ).join("");
 
-            <button
-              data-q="1"
-              data-key="${esc(item.key)}"
-              aria-label="Add one ${esc(item.name)}"
-              ${item.quantity >= window.OreoCart.MAX_QUANTITY ? "disabled" : ""}
-            >+</button>
-          </span>
-
-          <span class="price">
-            ${money(window.OreoCart.unitPrice(item) * item.quantity)}
-          </span>
-        </li>
-      `
-    )
-    .join("");
-
-  cartEl.innerHTML =
-    "<h3>Your order</h3>" +
+  cartEl.innerHTML = "<h3>Your order</h3>" +
     (
       items.length
-        ? `
-          <ul>${rows}</ul>
+        ? `<ul>${rows}</ul>
           <div class="tot">
             <span>Total ${money(totals.subtotal)}</span>
-            <button
-              class="btn"
-              id="clear"
-              style="padding:8px 16px;font-size:13px;background:var(--surface2)"
-            >Clear</button>
+            <button class="btn" id="clear" style="padding:8px 16px;font-size:13px;background:var(--surface2)">Clear</button>
           </div>
-          <button
-            class="btn solid"
-            id="place"
-            style="width:100%;justify-content:center;margin-top:12px"
-          >Checkout</button>
-        `
+          <button class="btn solid" id="place" style="width:100%;justify-content:center;margin-top:12px">Checkout</button>`
         : '<p class="empty">Nothing yet. Tap + on any item.</p>'
     );
 }
@@ -642,12 +493,7 @@ function quickAdd(id, button) {
 
   if (!product) return;
 
-  const result = window.OreoCart.add(
-    product,
-    "Medium",
-    [],
-    1
-  );
+  const result = window.OreoCart.add(product, "Medium", [], 1);
 
   if (!result.ok) {
     toast(
@@ -660,10 +506,7 @@ function quickAdd(id, button) {
 
   button.classList.add("done");
 
-  setTimeout(
-    () => button.classList.remove("done"),
-    700
-  );
+  setTimeout(() => button.classList.remove("done"), 700);
 
   if (!reduceMotion) {
     fly(button, product);
@@ -690,21 +533,18 @@ function fly(from, product) {
   (function step(now) {
     const t = Math.min(1, (now - started) / duration);
     const target = $("#orderBtn").getBoundingClientRect();
+
     const x2 = target.left + target.width / 2;
     const y2 = target.top + target.height / 2;
     const e = 1 - Math.pow(1 - t, 3);
     const u = 1 - e;
     const x = u * x0 + e * x2;
-    const y =
-      u * y0 +
-      e * y2 -
-      Math.sin(t * Math.PI) * 70;
+    const y = u * y0 + e * y2 - Math.sin(t * Math.PI) * 70;
 
     element.style.transform =
-      `translate(${x - 20}px,${y - 20}px) scale(${1 - 0.65 * e})`;
+      `translate(${x - 20}px,${y - 20}px) scale(${1 - .65 * e})`;
 
-    element.style.opacity =
-      t > 0.85 ? (1 - t) / 0.15 : 1;
+    element.style.opacity = t > .85 ? (1 - t) / .15 : 1;
 
     if (t < 1) {
       requestAnimationFrame(step);
@@ -719,10 +559,7 @@ $("#orderBtn").addEventListener("click", (event) => {
 
   const open = cartEl.classList.toggle("open");
 
-  event.currentTarget.setAttribute(
-    "aria-expanded",
-    open
-  );
+  event.currentTarget.setAttribute("aria-expanded", open);
 });
 
 cartEl.addEventListener("click", (event) => {
@@ -737,7 +574,6 @@ cartEl.addEventListener("click", (event) => {
   }
 
   const button = event.target.closest("[data-q]");
-
   if (!button) return;
 
   const item = window.OreoCart
@@ -751,6 +587,8 @@ cartEl.addEventListener("click", (event) => {
     );
   }
 });
+
+/* Navigation popovers */
 
 const pop = $("#menuPop");
 const moreBtn = $("#moreBtn");
@@ -776,33 +614,26 @@ document.addEventListener("click", (event) => {
   }
 });
 
+/* Firebase authentication state in the main navigation */
+
 window.OreoFirebase.onAuth((user, isAdmin) => {
   $("#authText").textContent = user
-    ? (
-        user.displayName
-          ? user.displayName.split(" ")[0]
-          : "Account"
-      )
+    ? (user.displayName ? user.displayName.split(" ")[0] : "Account")
     : "Log in";
 
   $("#authLink").href = "auth.html";
 
   $("#authLink").setAttribute(
     "aria-label",
-    user
-      ? "Open your account"
-      : "Log in or create an account"
+    user ? "Open your account" : "Log in or create an account"
   );
 
-  $("#authLink").classList.toggle(
-    "signed-in",
-    Boolean(user)
-  );
+  $("#authLink").classList.toggle("signed-in", Boolean(user));
 
   $("#authLink").title = isAdmin
     ? "Administrator account"
     : user
-      ? user.email || "Account"
+      ? (user.email || "Account")
       : "Log in or sign up";
 
   const reservationFields = $("#resForm").elements;
@@ -815,6 +646,8 @@ window.OreoFirebase.onAuth((user, isAdmin) => {
     reservationFields.name.value = user.displayName || "";
   }
 });
+
+/* Reservation requests */
 
 let icsUrl = "";
 
@@ -835,10 +668,7 @@ function calendarFor(form) {
     fields.date.value + "T" + fields.time.value
   );
 
-  const end = new Date(
-    start.getTime() + 90 * 60000
-  );
-
+  const end = new Date(start.getTime() + 90 * 60000);
   const link = $("#icsLink");
 
   if (Number.isNaN(start.getTime())) {
@@ -847,8 +677,7 @@ function calendarFor(form) {
   }
 
   const z = (date) =>
-    date
-      .toISOString()
+    date.toISOString()
       .replace(/[-:]/g, "")
       .replace(/\.\d{3}/, "");
 
@@ -921,10 +750,7 @@ $("#resForm").addEventListener("submit", async (event) => {
       form.reset();
     } else {
       const subject =
-        "Table request — " +
-        data.name +
-        " — " +
-        data.date;
+        "Table request — " + data.name + " — " + data.date;
 
       const body = [
         `Name: ${data.name}`,
@@ -967,6 +793,8 @@ $("#resForm").addEventListener("submit", async (event) => {
   }
 });
 
+/* Search */
+
 const sr = $("#sr");
 const srIn = $("#srIn");
 const srList = $("#srList");
@@ -982,39 +810,24 @@ function srDraw() {
   const query = srIn.value.trim().toLowerCase();
 
   srHits = PRODUCTS
-    .filter(
-      (product) =>
-        !query ||
-        (
-          product.name +
-          " " +
-          product.category +
-          " " +
-          product.description
-        )
-          .toLowerCase()
-          .includes(query)
+    .filter((product) =>
+      !query ||
+      (product.name + " " + product.category + " " + product.description)
+        .toLowerCase()
+        .includes(query)
     )
     .slice(0, 6);
 
   srSelection = 0;
 
   srList.innerHTML = srHits.length
-    ? srHits
-        .map(
-          (product, index) => `
-            <li data-id="${esc(product.id)}" class="${index ? "" : "sel"}">
-              <span class="em" style="--h:${product.hue}">
-                ${esc(product.emoji)}
-              </span>
-              ${esc(product.name)}
-              <small>
-                ${esc(product.category)}, ${money(product.price)}
-              </small>
-            </li>
-          `
-        )
-        .join("")
+    ? srHits.map((product, index) =>
+        `<li data-id="${esc(product.id)}" class="${index ? "" : "sel"}">
+          <span class="em" style="--h:${product.hue}">${esc(product.emoji)}</span>
+          ${esc(product.name)}
+          <small>${esc(product.category)}, ${money(product.price)}</small>
+        </li>`
+      ).join("")
     : '<li class="srempty">No products found</li>';
 }
 
@@ -1059,11 +872,10 @@ srIn.addEventListener("keydown", (event) => {
     event.preventDefault();
 
     srSelection =
-      (
-        srSelection +
+      (srSelection +
         (event.key === "ArrowDown" ? 1 : -1) +
-        srHits.length
-      ) % (srHits.length || 1);
+        srHits.length) %
+      (srHits.length || 1);
 
     srList.querySelectorAll("li").forEach((item, index) => {
       item.classList.toggle("sel", index === srSelection);
@@ -1097,44 +909,25 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-$("#sws").innerHTML = THEMES
-  .map(
-    (theme) => `
-      <button
-        class="sw"
-        data-t="${theme[0]}"
-        aria-pressed="false"
-        style="background:${theme[2]};color:${theme[4]}"
-      >
-        <span class="mini" style="background:${theme[3]}">
-          <i></i><u></u>
-        </span>
-        ${theme[1]}
-      </button>
-    `
-  )
-  .join("");
+/* Theme and display settings */
 
-$("#dots").innerHTML = ACCENTS
-  .map(
-    (colour) => `
-      <button
-        data-c="${colour}"
-        aria-pressed="false"
-        aria-label="Accent ${colour}"
-        style="background:${colour}"
-      ></button>
-    `
-  )
-  .join("");
+$("#sws").innerHTML = THEMES.map((theme) =>
+  `<button class="sw" data-t="${theme[0]}" aria-pressed="false" style="background:${theme[2]};color:${theme[4]}">
+    <span class="mini" style="background:${theme[3]}"><i></i><u></u></span>
+    ${theme[1]}
+  </button>`
+).join("");
+
+$("#dots").innerHTML = ACCENTS.map((colour) =>
+  `<button data-c="${colour}" aria-pressed="false" aria-label="Accent ${colour}" style="background:${colour}"></button>`
+).join("");
 
 const sysSw = $("#sysSw");
 
 function markTheme() {
   const selected = root.dataset.theme || null;
 
-  const effective =
-    selected ||
+  const effective = selected ||
     (
       matchMedia("(prefers-color-scheme:dark)").matches
         ? "espresso"
@@ -1177,19 +970,14 @@ function setTheme(theme) {
 }
 
 $("#themeBtn").addEventListener("click", () => {
-  const current =
-    root.dataset.theme ||
+  const current = root.dataset.theme ||
     (
       matchMedia("(prefers-color-scheme:dark)").matches
         ? "espresso"
         : "paper"
     );
 
-  setTheme(
-    ["paper", "snow"].includes(current)
-      ? "espresso"
-      : "paper"
-  );
+  setTheme(["paper", "snow"].includes(current) ? "espresso" : "paper");
 });
 
 $("#sws").addEventListener("click", (event) => {
@@ -1214,15 +1002,11 @@ sysSw.addEventListener("click", () => {
 
 $("#dots").addEventListener("click", (event) => {
   const button = event.target.closest("button");
-
   if (!button) return;
 
-  root.style.setProperty(
-    "--accent",
-    button.dataset.c
-  );
-
+  root.style.setProperty("--accent", button.dataset.c);
   store.set("oc-accent2", button.dataset.c);
+
   markTheme();
 });
 
@@ -1265,9 +1049,7 @@ $$(".switch.dummy").forEach((button) => {
   button.addEventListener("click", () => {
     button.setAttribute(
       "aria-checked",
-      String(
-        button.getAttribute("aria-checked") !== "true"
-      )
+      String(button.getAttribute("aria-checked") !== "true")
     );
   });
 });
@@ -1277,10 +1059,7 @@ function setSize(size) {
   store.set("oc-ts", size);
 
   $$("#sizes button").forEach((button) => {
-    button.classList.toggle(
-      "on",
-      button.dataset.s === size
-    );
+    button.classList.toggle("on", button.dataset.s === size);
   });
 
   slide($("#sizes"));
@@ -1296,6 +1075,8 @@ $("#sizes").addEventListener("click", (event) => {
 });
 
 setSize(store.get("oc-ts") || "medium");
+
+/* Sliding navigation and scroll spy */
 
 function slide(box) {
   const slider = box && box.querySelector(".slider");
@@ -1336,10 +1117,7 @@ if (document.fonts && document.fonts.ready) {
 }
 
 const spy = $$("#links a");
-
-const sections = spy.map((link) =>
-  $(link.getAttribute("href"))
-);
+const sections = spy.map((link) => $(link.getAttribute("href")));
 
 let currentSection = 0;
 let lastGlass = -1;
@@ -1349,7 +1127,7 @@ function onScroll() {
   const glass = Math.min(1, scrollY / 240);
 
   if (
-    Math.abs(glass - lastGlass) > 0.02 ||
+    Math.abs(glass - lastGlass) > .02 ||
     glass === 0 ||
     glass === 1
   ) {
@@ -1362,7 +1140,7 @@ function onScroll() {
   sections.forEach((section, index) => {
     if (
       section &&
-      section.getBoundingClientRect().top < innerHeight * 0.4
+      section.getBoundingClientRect().top < innerHeight * .4
     ) {
       current = index;
     }
@@ -1385,16 +1163,14 @@ function onScroll() {
   scrollTick = false;
 }
 
-addEventListener(
-  "scroll",
-  () => {
-    if (!scrollTick) {
-      scrollTick = true;
-      requestAnimationFrame(onScroll);
-    }
-  },
-  { passive: true }
-);
+addEventListener("scroll", () => {
+  if (!scrollTick) {
+    scrollTick = true;
+    requestAnimationFrame(onScroll);
+  }
+}, { passive: true });
+
+/* Home, full-menu and settings routes */
 
 const VIEWS = {
   "#/settings": "v-settings",
@@ -1409,17 +1185,12 @@ function applyQueryFilter() {
   const query = params.get("search");
 
   if (category || query !== null) {
-    fullMenu.setFilter(
-      category || "All",
-      query || ""
-    );
+    fullMenu.setFilter(category || "All", query || "");
   }
 }
 
 function route() {
-  const legacyDrink = location.hash.match(
-    /^#\/drink\/(.+)$/
-  );
+  const legacyDrink = location.hash.match(/^#\/drink\/(.+)$/);
 
   if (legacyDrink) {
     location.replace(
@@ -1431,10 +1202,7 @@ function route() {
 
   const view = viewOf();
 
-  document.body.classList.remove(
-    "v-settings",
-    "v-menu"
-  );
+  document.body.classList.remove("v-settings", "v-menu");
 
   if (view) {
     document.body.classList.add(view);
@@ -1458,10 +1226,9 @@ function route() {
       applyQueryFilter();
     }
   } else {
-    const target =
-      location.hash.length > 1
-        ? document.getElementById(location.hash.slice(1))
-        : null;
+    const target = location.hash.length > 1
+      ? document.getElementById(location.hash.slice(1))
+      : null;
 
     if (target) {
       target.scrollIntoView();
@@ -1478,12 +1245,13 @@ function route() {
 
 addEventListener("hashchange", route);
 
+/* Hero, opening hours and reveal motion */
+
 const heroBg = $(".hero-bg");
 let heroSource = "";
 
 function setHero() {
-  const theme =
-    root.dataset.theme ||
+  const theme = root.dataset.theme ||
     (
       matchMedia("(prefers-color-scheme:dark)").matches
         ? "espresso"
@@ -1520,11 +1288,9 @@ function setHero() {
       });
 
       setTimeout(() => {
-        heroBg
-          .querySelectorAll(".hero-photo")
-          .forEach((other) => {
-            if (other !== image) other.remove();
-          });
+        heroBg.querySelectorAll(".hero-photo").forEach((other) => {
+          if (other !== image) other.remove();
+        });
       }, 700);
     };
 
@@ -1560,37 +1326,30 @@ const DAYS = [
   "Saturday"
 ];
 
-$("#hours").innerHTML = DAYS
-  .map(
-    (day, index) => `
-      <li class="${index === new Date().getDay() ? "today" : ""}">
-        <span>${day}</span>
-        <span>8am to 1am</span>
-      </li>
-    `
-  )
-  .join("");
+$("#hours").innerHTML = DAYS.map((day, index) =>
+  `<li class="${index === new Date().getDay() ? "today" : ""}">
+    <span>${day}</span>
+    <span>8am to 1am</span>
+  </li>`
+).join("");
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("in");
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.12 }
-);
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("in");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: .12 });
 
 $$(".rv").forEach((element, index) => {
-  element.style.transitionDelay =
-    (index % 4) * 60 + "ms";
-
+  element.style.transitionDelay = (index % 4) * 60 + "ms";
   observer.observe(element);
 });
 
 route();
+
+/* Gallery and lightbox */
 
 const GALLERY = [
   ["☕", "Morning pour", 28],
@@ -1601,33 +1360,19 @@ const GALLERY = [
   ["🌙", "Open till 1am", 230]
 ];
 
-$("#gal").innerHTML = GALLERY
-  .map(
-    (item, index) => `
-      <button
-        class="gtile"
-        data-g="${index}"
-        style="--h:${item[2]}"
-        aria-label="${item[1]}"
-      >
-        ${item[0]}
-        <img
-          src="images/gallery-${index + 1}.jpg"
-          alt=""
-          loading="lazy"
-        >
-        <span class="gcap">${item[1]}</span>
-      </button>
-    `
-  )
-  .join("");
+$("#gal").innerHTML = GALLERY.map((item, index) =>
+  `<button class="gtile" data-g="${index}" style="--h:${item[2]}" aria-label="${item[1]}">
+    ${item[0]}
+    <img src="images/gallery-${index + 1}.jpg" alt="" loading="lazy">
+    <span class="gcap">${item[1]}</span>
+  </button>`
+).join("");
 
 const lb = $("#lb");
 let lightboxIndex = 0;
 
 function lbShow(index) {
-  lightboxIndex =
-    (index + GALLERY.length) % GALLERY.length;
+  lightboxIndex = (index + GALLERY.length) % GALLERY.length;
 
   const item = GALLERY[lightboxIndex];
 
@@ -1635,10 +1380,7 @@ function lbShow(index) {
 
   $("#lbImg").innerHTML =
     item[0] +
-    `<img
-      src="images/gallery-${lightboxIndex + 1}.jpg"
-      alt="${item[1]}"
-    >`;
+    `<img src="images/gallery-${lightboxIndex + 1}.jpg" alt="${item[1]}">`;
 
   $("#lbCap").textContent = item[1];
 }
@@ -1689,6 +1431,8 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+/* Reviews */
+
 const REVIEWS = [
   ["Ayesha K.", "The oat latte is the best I have had. Cozy, quiet and always warm."],
   ["Daniel R.", "Croissants are out by six and they are unreal. My new morning stop."],
@@ -1698,20 +1442,15 @@ const REVIEWS = [
   ["Hamza A.", "Friendly team and the cheesecake is dangerous. Booked a table for my birthday."]
 ];
 
-$("#revTrack").innerHTML = [
-  ...REVIEWS,
-  ...REVIEWS
-]
-  .map(
-    (review) => `
-      <figure class="rev">
-        <div class="stars" aria-label="5 stars">★★★★★</div>
-        <blockquote>${esc(review[1])}</blockquote>
-        <figcaption>${esc(review[0])}</figcaption>
-      </figure>
-    `
-  )
-  .join("");
+$("#revTrack").innerHTML = [...REVIEWS, ...REVIEWS].map((review) =>
+  `<figure class="rev">
+    <div class="stars" aria-label="5 stars">★★★★★</div>
+    <blockquote>${esc(review[1])}</blockquote>
+    <figcaption>${esc(review[0])}</figcaption>
+  </figure>`
+).join("");
+
+/* Keyboard help */
 
 const keys = $("#ks");
 
@@ -1739,9 +1478,7 @@ keys.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  const tag =
-    document.activeElement &&
-    document.activeElement.tagName;
+  const tag = document.activeElement && document.activeElement.tagName;
 
   if (
     /^(INPUT|TEXTAREA|SELECT)$/.test(tag) ||
@@ -1763,14 +1500,12 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+/* Three-dot menu and installable app */
+
 function surprise() {
   const go = () => {
-    const list = [
-      ...grid.querySelectorAll(".card:not(.hidden)")
-    ];
-
-    const card =
-      list[Math.floor(Math.random() * list.length)];
+    const list = [...grid.querySelectorAll(".card:not(.hidden)")];
+    const card = list[Math.floor(Math.random() * list.length)];
 
     if (!card) return;
 
@@ -1783,10 +1518,7 @@ function surprise() {
     void card.offsetWidth;
     card.classList.add("spot");
 
-    setTimeout(
-      () => card.classList.remove("spot"),
-      1800
-    );
+    setTimeout(() => card.classList.remove("spot"), 1800);
   };
 
   if (viewOf()) {
@@ -1817,23 +1549,18 @@ const MENU_ACTIONS = {
   Categories: () => {
     location.hash = "#/menu";
   },
-
   "Best sellers": () => {
     location.href = "?filter=Top#/menu";
   },
-
   "Surprise me": surprise,
   "Install app": installApp,
   "Keyboard shortcuts": openKeys,
-
   Settings: () => {
     location.hash = "#/settings";
   },
-
   Language: () => {
     toast("English (UK) is selected");
   },
-
   Report: () => {
     location.href =
       "mailto:" +
@@ -1841,7 +1568,6 @@ const MENU_ACTIONS = {
       "?subject=" +
       encodeURIComponent("Website report");
   },
-
   "Request a drink": () => {
     location.href =
       "mailto:" +
@@ -1852,8 +1578,8 @@ const MENU_ACTIONS = {
 };
 
 $$("#menuPop .it").forEach((button) => {
-  const action = Object.keys(MENU_ACTIONS).find(
-    (name) => button.textContent.trim().startsWith(name)
+  const action = Object.keys(MENU_ACTIONS).find((name) =>
+    button.textContent.trim().startsWith(name)
   );
 
   if (action) {
@@ -1869,15 +1595,13 @@ $$(".install-app").forEach((button) => {
   button.addEventListener("click", installApp);
 });
 
-document.addEventListener(
-  "error",
-  (event) => {
-    if (event.target.tagName === "IMG") {
-      event.target.remove();
-    }
-  },
-  true
-);
+/* Images gracefully fall back to their emoji artwork. */
+
+document.addEventListener("error", (event) => {
+  if (event.target.tagName === "IMG") {
+    event.target.remove();
+  }
+}, true);
 
 $$("img").forEach((image) => {
   if (image.complete && !image.naturalWidth) {
@@ -1890,47 +1614,6 @@ if (
   location.protocol.startsWith("http")
 ) {
   addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("sw.js")
-      .catch(() => {});
+    navigator.serviceWorker.register("sw.js").catch(() => {});
   });
 }
-/* Automatically add saved product categories to the main menu navbars. */
-window.OreoFirebase.onProducts((products) => {
-  const categories = [
-    ...new Set(
-      products
-        .map((product) => product.category)
-        .filter((category) => category && category !== "__new__")
-    )
-  ].sort((a, b) => a.localeCompare(b));
-
-  ["filters", "filters2"].forEach((id) => {
-    const navbar = document.getElementById(id);
-
-    if (!navbar) return;
-
-    const topRatedButton = navbar.querySelector(
-      'button[data-f="Top"]'
-    );
-
-    categories.forEach((category) => {
-      const alreadyExists = [
-        ...navbar.querySelectorAll("button")
-      ].some((button) => button.dataset.f === category);
-
-      if (alreadyExists) return;
-
-      const button = document.createElement("button");
-      button.type = "button";
-      button.dataset.f = category;
-      button.textContent = category;
-
-      navbar.insertBefore(button, topRatedButton);
-    });
-
-    if (typeof slide === "function") {
-      slide(navbar);
-    }
-  });
-});
