@@ -166,24 +166,74 @@ function cardHTML(product) {
   `;
 }
 
-function setupMenu(gridEl, filtersEl, countEl, options) {
-  let cards = [];
-  let category = "All";
-  let query = "";
-  let visible = Infinity;
-  let filterSignature = "";
+function apply() {
+  // Rebuild the home preview when its category changes.
+  if (options.pill) render();
+
+  gridEl.classList.add("swap");
+
+  setTimeout(() => {
+    show(true);
+    gridEl.classList.remove("swap");
+  }, 120);
+}
 
   const none =
     gridEl.parentElement &&
     gridEl.parentElement.querySelector(".nomatch");
 
-  function renderFilters() {
-    const categories = [
-      ...new Set(
-        PRODUCTS
-          .map((product) => product.category)
-          .filter((category) => category && category !== "__new__")
+  function render() {
+  renderFilters();
+
+  visible = options.page ? options.page() : Infinity;
+
+  const limit = options.limit();
+
+  const matches = (product) =>
+    (
+      category === "All" ||
+      (
+        category === "Top"
+          ? product.rating >= 4.8
+          : category === "Saved"
+            ? favs.has(product.id)
+            : product.category === category
       )
+    ) &&
+    (
+      !query ||
+      (
+        product.name +
+        " " +
+        product.category +
+        " " +
+        product.description
+      )
+        .toLowerCase()
+        .includes(query)
+    );
+
+  // For the home preview, select products from the chosen category
+  // before applying the preview limit.
+  const source =
+    options.pill && category !== "All"
+      ? PRODUCTS.filter(matches)
+      : PRODUCTS;
+
+  gridEl.innerHTML = source
+    .slice(0, limit)
+    .map(cardHTML)
+    .join("");
+
+  cards = [...gridEl.querySelectorAll(".card")];
+
+  show(false);
+
+  if (options.pill) {
+    options.pill.hidden = PRODUCTS.length <= limit;
+  }
+}
+Do not change ad
     ].sort((a, b) => a.localeCompare(b));
 
     const signature = JSON.stringify(categories);
