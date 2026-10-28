@@ -431,7 +431,7 @@ function slide(box) {
 function moveSlider() { $$(".links,.filters").forEach(slide); }
 addEventListener("resize", moveSlider); addEventListener("load", moveSlider);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveSlider);
-const spy = $$("#links a"), sections = spy.map((link) => $(link.getAttribute("href")));
+const spy = $$("#links a[href^='#']"), sections = spy.map((link) => $(link.getAttribute("href")));
 let currentSection = 0, lastGlass = -1, scrollTick = false;
 function onScroll() {
   const glass = Math.min(1, scrollY / 240);
